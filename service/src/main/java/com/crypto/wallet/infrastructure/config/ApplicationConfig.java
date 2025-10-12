@@ -81,29 +81,6 @@ public class ApplicationConfig {
   }
 
   @Bean
-  public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-    return new JdbcTemplate(dataSource);
-  }
-
-  @Bean
-  public LockProvider lockProvider(JdbcTemplate jdbcTemplate) {
-    return new JdbcTemplateLockProvider(JdbcTemplateLockProvider.Configuration.builder()
-        .withJdbcTemplate(jdbcTemplate)
-        .usingDbTime()
-        .build());
-  }
-
-  @Bean
-  @Profile("!test")
-  public SpringLiquibase liquibase(DataSource dataSource, LiquibaseProperties liquibaseProperties) {
-    SpringLiquibase liquibase = new SpringLiquibase();
-    liquibase.setDataSource(dataSource);
-    liquibase.setChangeLog(liquibaseProperties.changeLog());
-    liquibase.setContexts(liquibaseProperties.contexts());
-    return liquibase;
-  }
-
-  @Bean
   public ObjectMapper objectMapper() {
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JavaTimeModule());
@@ -112,7 +89,6 @@ public class ApplicationConfig {
     mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
     return mapper;
   }
-
 
   @Bean
   public UserRepository userRepository(JdbcClient jdbcClient) {
@@ -126,7 +102,6 @@ public class ApplicationConfig {
 
   @Bean
   public CryptoGateway cryptoPriceGateway(ExecutorService virtualThreadExecutor, CoinCapProperties coinCapProperties) {
-
     String apiKey = coinCapProperties.key();
     RestClient.Builder restClientBuilder = RestClient.builder()
         .baseUrl(coinCapProperties.baseUrl())
@@ -137,7 +112,7 @@ public class ApplicationConfig {
       restClientBuilder = restClientBuilder.defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey.trim());
       logger.info("CoinCap API configured with authentication");
     } else {
-      logger.warn("CoinCap API configured without authentication - rate limits may apply");
+      logger.warn("CoinCap API configured without authentication");
     }
 
     RestClient restClient = restClientBuilder.build();

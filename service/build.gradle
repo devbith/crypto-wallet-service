@@ -67,7 +67,24 @@ test {
     }
 }
 
+tasks.register('dockerComposeUp', Exec) {
+    commandLine dockerExecutablePath, 'compose', '-f', '../deployment/local/docker-compose.yaml', 'up', '-d', 'postgres'
+    doLast {
+        // Wait for PostgreSQL to be ready
+        exec {
+            commandLine 'bash', '-c', 'timeout 40s bash -c \'until ' + dockerExecutablePath + ' exec crypto-wallet-postgres pg_isready -U crypto_wallet_user -d crypto_wallet; do sleep 1; done\''
+        }
+    }
+}
+
+tasks.register('dockerComposeDown', Exec) {
+    commandLine dockerExecutablePath, 'compose', '-f', '../deployment/local/docker-compose.yaml', 'down'
+}
+
 tasks.register('integrationTest', Test) {
+    dependsOn dockerComposeUp
+    finalizedBy dockerComposeDown
+    
     useJUnitPlatform()
     include '**/*IT*'
     testLogging {
