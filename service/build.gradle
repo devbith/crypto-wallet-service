@@ -78,9 +78,6 @@ tasks.register('integrationTest', Test) {
 
 build.finalizedBy(integrationTest, jacocoTestReport)
 
-// Docker Compose integration test configuration removed
-// Use root project docker-compose tasks instead
-
 jacocoTestReport {
     dependsOn test, integrationTest
     executionData tasks.withType(Test)
