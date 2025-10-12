@@ -33,8 +33,19 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
+    - name: Start PostgreSQL
+      run: docker-compose -f deployment/local/docker-compose.yaml up -d postgres
+
+    - name: Wait for PostgreSQL
+      run: |
+        timeout 30s bash -c 'until docker exec crypto-wallet-postgres pg_isready -U crypto_wallet_user -d crypto_wallet; do sleep 1; done'
+
     - name: Build with Gradle Wrapper
       run: ./gradlew build
+
+    - name: Stop PostgreSQL
+      if: always()
+      run: docker-compose -f deployment/local/docker-compose.yaml down
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
@@ -61,7 +72,18 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
+    - name: Start PostgreSQL
+      run: docker-compose -f deployment/local/docker-compose.yaml up -d postgres
+
+    - name: Wait for PostgreSQL
+      run: |
+        timeout 30s bash -c 'until docker exec crypto-wallet-postgres pg_isready -U crypto_wallet_user -d crypto_wallet; do sleep 1; done'
+
     # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
     # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
     - name: Generate and submit dependency graph
       uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+
+    - name: Stop PostgreSQL
+      if: always()
+      run: docker-compose -f deployment/local/docker-compose.yaml down
