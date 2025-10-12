@@ -62,3 +62,10 @@ npm run dev
 # Stop PostgreSQL
 ./gradlew composeDown
 ```
+
+
+### How to get COINCAP_API_KEY 
+- CoinCap API: https://docs.coincap.io
+- Signup for Free to create the apiKey: https://pro.coincap.io/signup
+- Assets: https://docs.coincap.io/#89deffa0-ab03-4e0a-8d92-637a857d2c91
+- Price history: https://docs.coincap.io/#61e708a8-8876-4fb2-a418-86f12f308978
