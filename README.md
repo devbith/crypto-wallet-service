@@ -13,6 +13,10 @@ Manage crypto wallets, track assets, and simulate profit/loss scenarios.
 - Profit/loss simulation based on current market prices
 
 ## Architecture
+
+### High Level Overview
+<img src="assets/architecture.png" alt="Architecture Diagram"/>
+
 The project follows hexagonal architecture with:
 - **Application Layer**: Domain models, business logic, and use case (ports) orchestration
 - **Infrastructure Layer**: REST APIs, database adapters, and external service integrations
