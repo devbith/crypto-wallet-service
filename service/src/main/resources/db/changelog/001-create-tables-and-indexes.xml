@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+  <changeSet id="1.0" author="bishal">
+    <sql>
+      CREATE TABLE IF NOT EXISTS users (
+        email VARCHAR(255) PRIMARY KEY NOT NULL,
+        wallet_id VARCHAR(36) NOT NULL UNIQUE,
+        created_at TIMESTAMPTZ NOT NULL
+      );
+
+      CREATE UNIQUE INDEX IF NOT EXISTS uk_users_email ON users (email);
+      CREATE UNIQUE INDEX IF NOT EXISTS uk_users_wallet_id ON users (wallet_id);
+
+      CREATE TABLE IF NOT EXISTS assets (
+        wallet_id VARCHAR(36) NOT NULL,
+        symbol VARCHAR(10) NOT NULL,
+        quantity DECIMAL(20,8) NOT NULL,
+        price DECIMAL(20,6) NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL,
+        PRIMARY KEY (wallet_id, symbol),
+        CONSTRAINT fk_assets_wallet_id FOREIGN KEY (wallet_id) REFERENCES users (wallet_id) ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_assets_wallet_id ON assets (wallet_id);
+      CREATE INDEX IF NOT EXISTS idx_assets_symbol ON assets (symbol);
+    </sql>
+    <rollback>
+      DROP TABLE IF EXISTS assets;
+      DROP TABLE IF EXISTS users;
+    </rollback>
+  </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,12 @@
+{
+  "name": "crypto-wallet-webapp",
+  "version": "1.0.0",
+  "description": "Crypto Wallet Frontend",
+  "scripts": {
+    "dev": "http-server build/webapp -p 3000 -o",
+    "start": "http-server build/webapp -p 3000"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

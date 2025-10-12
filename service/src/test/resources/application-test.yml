@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    # Will be overridden by TestContainers
+    url: jdbc:postgresql://localhost:5433/crypto_wallet
+    username: crypto_wallet_user
+    password: crypto_wallet_pass
+    driver-class-name: org.postgresql.Driver
+  
+  liquibase:
+    enabled: true  # Enable for integration tests
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    contexts: test
+    drop-first: true  # Clean database for each test
+  
+  jpa:
+    hibernate:
+      ddl-auto: none  # Let Liquibase handle schema
+    show-sql: false
+  
+  threads:
+    virtual:
+      enabled: true
+
+# Disable price updates in tests
+price:
+  update:
+    enabled: false
+    frequency: 1m  # 1 minute for tests (if enabled)
+
+# CoinCap API will be mocked in tests
+coincap:
+  api:
+    base-url: http://localhost
+    key: test-key
+    timeout: 5000
+
+# Logging for tests
+logging:
+  level:
+    com.crypto.wallet: DEBUG
+    org.springframework.jdbc: INFO
+    liquibase: INFO
+    
+server:
+  port: 0  # Random port for tests

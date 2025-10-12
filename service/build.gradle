@@ -1,0 +1,102 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'jacoco'
+    id 'org.liquibase.gradle' version '2.2.0'
+}
+
+group = 'com.crypto.wallet'
+version = '1.0.0-SNAPSHOT'
+
+def dockerExecutablePath = System.getenv("DOCKER_EXECUTABLE_PATH") ?: System.getenv("CI") ? "/usr/bin/docker" : "/opt/homebrew/bin/docker"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot starters
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    
+    implementation 'org.postgresql:postgresql'
+    implementation 'com.zaxxer:HikariCP'
+    implementation 'org.liquibase:liquibase-core'
+    
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+    
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'org.apache.commons:commons-lang3'
+    
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:5.10.2'
+    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.10.2'
+    
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:junit-jupiter'
+
+    testImplementation 'com.tngtech.archunit:archunit-junit5:1.2.1'
+    testImplementation 'com.tngtech.archunit:archunit:1.2.1'
+    
+    testImplementation 'com.github.tomakehurst:wiremock-jre8-standalone:2.35.0'
+    
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.assertj:assertj-core'
+    
+    liquibaseRuntime 'org.postgresql:postgresql'
+    liquibaseRuntime 'org.liquibase:liquibase-core'
+    liquibaseRuntime 'info.picocli:picocli:4.6.3'
+}
+
+test {
+    useJUnitPlatform()
+    exclude '**/*IT*'
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = 'full'
+    }
+}
+
+tasks.register('integrationTest', Test) {
+    useJUnitPlatform()
+    include '**/*IT*'
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = 'full'
+    }
+}
+
+build.finalizedBy(integrationTest, jacocoTestReport)
+
+// Docker Compose integration test configuration removed
+// Use root project docker-compose tasks instead
+
+jacocoTestReport {
+    dependsOn test, integrationTest
+    executionData tasks.withType(Test)
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                "**/model/**",
+                "**/dto/**",
+                "**/config/*",
+                "**/exception/*",
+                "**/CryptoWalletApplication.java"
+            ])
+        }))
+    }
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}

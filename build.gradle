@@ -1,0 +1,36 @@
+plugins {
+    id 'com.avast.gradle.docker-compose' version '0.16.12'
+}
+
+group = 'com.crypto.wallet'
+version = '1.0.0-SNAPSHOT'
+
+def dockerExecutablePath = System.getenv("DOCKER_EXECUTABLE_PATH") ?: System.getenv("CI") ? "/usr/bin/docker" : "/opt/homebrew/bin/docker"
+
+dockerCompose {
+    useComposeFiles = ['deployment/local/docker-compose.yaml']
+    dockerExecutable = dockerExecutablePath
+    removeOrphans = true
+    stopContainers = true
+    
+    // Integration test configuration
+    itTests {
+        useComposeFiles = ['deployment/local/docker-compose.yaml']
+        dockerExecutable = dockerExecutablePath
+        removeOrphans = true
+        stopContainers = true
+    }
+}
+
+ext {
+    nodeVersion = '18.18.2'
+    gradleNodeVersion = "7.0.1"
+    springBootVersion = '3.2.0'
+    javaVersion = '21'
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+}

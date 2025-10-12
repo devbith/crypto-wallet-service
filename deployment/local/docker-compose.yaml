@@ -1,0 +1,25 @@
+services:
+  postgres:
+    container_name: crypto-wallet-postgres
+    image: postgres:15
+    environment:
+      POSTGRES_USER: "crypto_wallet_user"
+      POSTGRES_PASSWORD: "crypto_wallet_pass"
+      POSTGRES_DB: "crypto_wallet"
+      TZ: 'UTC'
+      PGTZ: 'UTC'
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - crypto-wallet-network
+
+volumes:
+  pg-data:
+    name: crypto-wallet-postgres-data
+
+networks:
+  crypto-wallet-network:
+    driver: bridge
+    name: crypto-wallet-network

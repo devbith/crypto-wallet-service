@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/crypto_wallet
+    username: crypto_wallet_user
+    password: crypto_wallet_pass
+    driver-class-name: org.postgresql.Driver
+  
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    contexts: dev
+  
+  threads:
+    virtual:
+      enabled: true
+
+
+logging:
+  level:
+    com.crypto.wallet: DEBUG
+    org.springframework.jdbc: INFO
+    liquibase: INFO
+
+server:
+  port: 8080

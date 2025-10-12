@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: crypto-wallet-service
+  profiles:
+    active: dev
+    include: liquibase
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/crypto_wallet}
+    username: ${DATABASE_USERNAME:crypto_wallet_user}
+    password: ${DATABASE_PASSWORD:crypto_wallet_pass}
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+
+
+price:
+  update:
+    enabled: ${PRICE_UPDATE_ENABLED:true}
+    frequency-in-ms: ${PRICE_UPDATE_FREQUENCY_IN_MS:300000} # 5 minutes
+
+crypto-wallet:
+  coincap:
+    api:
+      base-url: ${COINCAP_API_URL:https://rest.coincap.io/v3}
+      key: ${COINCAP_API_KEY:}
