@@ -1,3 +1,5 @@
+[![Java CI with Gradle](https://github.com/devbith/crypto-wallet-service/actions/workflows/gradle.yml/badge.svg)](https://github.com/devbith/crypto-wallet-service/actions/workflows/gradle.yml)
+
 # Crypto Wallet Service
 
 A cryptocurrency wallet management service built with Java 21, Spring Boot 3, and hexagonal architecture. 
