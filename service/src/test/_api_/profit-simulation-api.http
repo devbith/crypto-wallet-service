@@ -1,0 +1,18 @@
+### Profit Simulation
+POST http://localhost:8080/api/v1/profit-simulation
+Content-Type: application/json
+
+{
+  "assets": [
+    {
+      "symbol": "BTC",
+      "quantity": 0.5,
+      "value": 22500.00
+    },
+    {
+      "symbol": "ETH",
+      "quantity": 2.0,
+      "value": 6000.00
+    }
+  ]
+}

@@ -27,7 +27,7 @@ class JdbcAssetRepositoryIT extends BaseIT {
 
   @Test
   void assetRepository_ShouldSaveAndFindAssets() {
-    var email = Email.of("test@example.com");
+    var email = Email.of("spider.man@marvel.com");
     var user = User.create(email);
     userRepository.save(user);
     var walletId = user.walletId();

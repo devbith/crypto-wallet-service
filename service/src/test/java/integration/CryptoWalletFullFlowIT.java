@@ -21,7 +21,7 @@ class CryptoWalletFullFlowIT extends BaseIT {
   @Test
   void cryptoWalletFullFlowTest() {
     // Create wallet
-    CreateWalletRequest createRequest = new CreateWalletRequest("test@example.com");
+    CreateWalletRequest createRequest = new CreateWalletRequest("spider.man@marvel.com");
     ResponseEntity<UserResponse> createResponse = restTemplate.postForEntity("/api/v1/wallets", createRequest, UserResponse.class);
 
     assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);

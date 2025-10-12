@@ -1,5 +1,7 @@
 package com.crypto.wallet.infrastructure.config;
 
+import com.crypto.wallet.application.ProfitSimulationWorkflow;
+import com.crypto.wallet.application.WalletWorkflow;
 import com.crypto.wallet.application.port.in.PriceUpdateUseCase;
 import com.crypto.wallet.application.port.in.ProfitSimulationUseCase;
 import com.crypto.wallet.application.port.in.WalletUseCase;
@@ -7,8 +9,6 @@ import com.crypto.wallet.application.port.out.AssetRepository;
 import com.crypto.wallet.application.port.out.CryptoGateway;
 import com.crypto.wallet.application.port.out.UserRepository;
 import com.crypto.wallet.application.service.DefaultPriceUpdateService;
-import com.crypto.wallet.application.ProfitSimulationWorkflow;
-import com.crypto.wallet.application.WalletWorkflow;
 import com.crypto.wallet.application.service.ProfitCalculationService;
 import com.crypto.wallet.application.service.WalletDomainService;
 import com.crypto.wallet.infrastructure.adapter.in.cronjob.PriceUpdateCronJob;
@@ -30,9 +30,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
-import liquibase.integration.spring.SpringLiquibase;
-import net.javacrumbs.shedlock.core.LockProvider;
-import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,12 +37,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestClient;
@@ -54,6 +50,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableTransactionManagement
+@EnableScheduling
 @EnableSchedulerLock(defaultLockAtMostFor = "10m")
 @EnableConfigurationProperties({DataSourceProperties.class, LiquibaseProperties.class, CoinCapProperties.class})
 public class ApplicationConfig {
@@ -116,7 +113,6 @@ public class ApplicationConfig {
     }
 
     RestClient restClient = restClientBuilder.build();
-
     return new CoinMarketCap(restClient, virtualThreadExecutor);
   }
 

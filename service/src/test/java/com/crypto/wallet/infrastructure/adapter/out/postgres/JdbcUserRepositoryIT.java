@@ -17,7 +17,7 @@ class JdbcUserRepositoryIT extends BaseIT {
 
   @Test
   void userRepository_ShouldSaveAndFindUser() {
-    var email = Email.of("test@example.com");
+    var email = Email.of("spider.man@marvel.com");
     var user = User.create(email);
 
     userRepository.save(user);

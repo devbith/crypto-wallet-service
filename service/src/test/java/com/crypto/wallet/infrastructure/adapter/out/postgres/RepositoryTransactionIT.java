@@ -37,7 +37,7 @@ class RepositoryTransactionIT extends BaseIT {
 
   @Test
   void transaction_shouldCommitOnSuccess() {
-    var email = Email.of("test@example.com");
+    var email = Email.of("spider.man@marvel.com");
     var user = User.create(email);
 
     userRepository.save(user);
@@ -46,7 +46,7 @@ class RepositoryTransactionIT extends BaseIT {
 
   @Test
   void transaction_shouldRollbackOnError() {
-    var user = createTestUser("rollback-test@example.com");
+    var user = createTestUser("spider.man@marvel.com");
     var walletId = user.walletId();
 
     assertThatThrownBy(() -> {

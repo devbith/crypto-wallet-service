@@ -57,7 +57,7 @@ class WalletWorkflowTest {
   void setUp() {
     walletWorkFlow = new WalletWorkflow(userRepository, assetRepository, cryptoGateway, walletDomainService);
 
-    testEmail = Email.of("test@example.com");
+    testEmail = Email.of("spider.man@marvel.com");
     testWalletId = WalletId.generate();
     testSymbol = Symbol.of("BTC");
     testQuantity = Quantity.of(new BigDecimal("1.5"));

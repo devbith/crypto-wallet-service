@@ -1,0 +1,26 @@
+### Create Wallet
+POST http://localhost:8080/api/v1/wallets
+Content-Type: application/json
+
+{
+  "email": "spider.man@marvel.com"
+}
+
+### Get all wallets
+GET http://localhost:8080/api/v1/wallets
+Accept: application/json
+
+### Get wallet
+GET http://localhost:8080/api/v1/wallets/{{walletId}}
+Accept: application/json
+
+
+### Add asset to wallet
+POST http://localhost:8080/api/v1/wallets/{{walletId}}/assets
+Content-Type: application/json
+
+{
+  "symbol": "BTC",
+  "quantity": 0.5,
+  "price": 45000.00
+}
