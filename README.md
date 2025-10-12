@@ -34,7 +34,7 @@ The project follows hexagonal architecture with:
 - Java 21+ 
 - Docker (for PostgreSQL)
 
-### Backend SetupThe
+### Backend Setup
 
 ```bash
 # Clone repository
