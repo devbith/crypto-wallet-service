@@ -144,34 +144,32 @@ public class JdbcAssetRepository implements AssetRepository {
         LEFT JOIN assets a ON u.wallet_id = a.wallet_id
         ORDER BY u.created_at DESC, a.symbol
         """).query((rs, rowNum) -> {
-          WalletId walletId = WalletId.of(rs.getString("wallet_id"));
-
-          WalletData walletData = walletMap.computeIfAbsent(walletId, k -> {
-            try {
-              return new WalletData(walletId, rs.getObject("created_at", OffsetDateTime.class), new ArrayList<>());
-            } catch (SQLException e) {
-              throw new RuntimeException("Error reading wallet data", e);
-            }
-          });
-
-          String symbol = rs.getString("symbol");
-          if (symbol != null) {
-            Asset asset = Asset.of(
-                walletId,
-                Symbol.of(symbol),
-                Quantity.of(rs.getBigDecimal("quantity")),
-                Price.of(rs.getBigDecimal("price")),
-                rs.getObject("updated_at", OffsetDateTime.class)
-            );
-            walletData.assets().add(asset);
-          }
-
+          processRow(rs, walletMap);
           return null;
         }).list();
 
     return walletMap.values().stream()
-        .map(walletData -> Wallet.of(walletData.walletId(), walletData.assets(), walletData.createdAt()))
+        .map(data -> Wallet.of(data.walletId(), data.assets(), data.createdAt()))
         .toList();
+  }
+
+  private void processRow(ResultSet rs, Map<WalletId, WalletData> walletMap) throws SQLException {
+    WalletId walletId = WalletId.of(rs.getString("wallet_id"));
+    OffsetDateTime createdAt = rs.getObject("created_at", OffsetDateTime.class);
+
+    walletMap.computeIfAbsent(walletId, k -> new WalletData(walletId, createdAt, new ArrayList<>()));
+
+    String symbol = rs.getString("symbol");
+    if (symbol != null) {
+      Asset asset = Asset.of(
+          walletId,
+          Symbol.of(symbol),
+          Quantity.of(rs.getBigDecimal("quantity")),
+          Price.of(rs.getBigDecimal("price")),
+          rs.getObject("updated_at", OffsetDateTime.class)
+      );
+      walletMap.get(walletId).assets().add(asset);
+    }
   }
 
   private Asset mapAsset(ResultSet rs, int rowNum) throws SQLException {
