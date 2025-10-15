@@ -17,9 +17,69 @@ Manage crypto wallets, track assets, and simulate profit/loss scenarios.
 ### High Level Overview
 <img src="assets/architecture.png" alt="Architecture Diagram"/>
 
-The project follows hexagonal architecture with:
-- **Application Layer**: Domain models, business logic, and use case (ports) orchestration
-- **Infrastructure Layer**: REST APIs, database adapters, and external service integrations
+# 🎯 What Each Layer Does
+
+### Application Layer (`application/`)
+- **Models**: Business entities (`User`, `Wallet`, `Asset`) and value objects
+- **Ports**: Interfaces defining what the app can do (`in/`) and what it needs (`out/`)
+- **Workflows**: Use case orchestrators that coordinate domain services and repositories
+    - `WalletWorkflow` - Manages wallets and assets using `WalletDomainService`
+    - `ProfitSimulationWorkflow` - Calculates profit/loss using `ProfitCalculationService`
+- **Services**: Focused domain services used by workflows for specific business logic
+
+### Infrastructure Layer (`infrastructure/`)
+- **REST Controllers** (`adapter/in/rest/`) - HTTP endpoints
+- **Database** (`adapter/out/postgres/`) - Data persistence
+- **External APIs** (`adapter/out/coinmarketcap/`) - Price data
+- **Config** - Wiring everything together
+
+---
+
+## 📁 Directory Structure
+
+```
+crypto-wallet-service/
+├── service/                           # Main application module
+│   └── src/
+│       ├── main/java/com/crypto/wallet/
+│       │   ├── application/           # 🎯 Business Logic Layer
+│       │   │   ├── model/            # Domain entities
+│       │   │   │   ├── primitives/   # Value objects (Email, WalletId, etc.)
+│       │   │   │   ├── Asset.java
+│       │   │   │   ├── User.java
+│       │   │   │   └── Wallet.java
+│       │   │   ├── port/             # Interfaces (Hexagonal Architecture)
+│       │   │   │   ├── in/          # Incoming ports (Use Cases)
+│       │   │   │   └── out/         # Outgoing ports (Use Cases)
+│       │   │   ├── service/         # Domain services
+│       │   │   ├── ProfitSimulationWorkflow.java  # Use case orchestrator for P&L calculations
+│       │   │   └── WalletWorkflow.java            # Use case orchestrator for wallet operations
+│       │   ├── infrastructure/       # 🔧 Technical Layer
+│       │   │   ├── adapter/
+│       │   │   │   ├── in/          # Incoming adapters
+│       │   │   │   │   ├── rest/    # REST controllers & DTOs
+│       │   │   │   │   └── cronjob/ # Scheduled tasks
+│       │   │   │   └── out/         # Outgoing adapters
+│       │   │   │       ├── postgres/    # Database implementations
+│       │   │   │       └── coinmarketcap/   # External API clients
+│       │   │   └── config/          # Configuration classes
+│       │   └── CryptoWalletApplication.java
+│       └── test/                     # Test suites
+│           ├── integration/         # End-to-end tests
+│           ├── architecture/        # Architecture validation tests
+│           └── com/crypto/wallet/   # Unit tests mirroring main structure
+├── webapp/                          # simple html and javascript web page 
+├── deployment/                      # Docker & deployment configs
+└── build.gradle                    # Build configuration
+```
+
+
+## 🧪 Testing
+
+- `architecture/` - Validates layer boundaries
+- `integration/` - Full end-to-end tests
+- `unit/` - Fast isolated business logic tests
+
 
 
 ## Technology Stack
@@ -28,7 +88,7 @@ The project follows hexagonal architecture with:
 - **Spring Boot 3**
 - **PostgreSQL**
 
-## Quick Start
+# Quick Start
 
 ### Prerequisites
 - Java 21+ 
