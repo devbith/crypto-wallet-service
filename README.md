@@ -22,7 +22,7 @@ Manage crypto wallets, track assets, and simulate profit/loss scenarios.
 ### Application Layer (`application/`)
 - **Models**: Business entities (`User`, `Wallet`, `Asset`) and value objects
 - **Ports**: Interfaces defining what the app can do (`in/`) and what it needs (`out/`)
-- **Workflows**: Use case orchestrators that coordinate domain services and repositories
+- **Workflows**: Use case orchestrators that coordinate domain services and external concerns
     - `WalletWorkflow` - Manages wallets and assets using `WalletDomainService`
     - `ProfitSimulationWorkflow` - Calculates profit/loss using `ProfitCalculationService`
 - **Services**: Focused domain services used by workflows for specific business logic
