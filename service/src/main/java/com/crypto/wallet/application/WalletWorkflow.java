@@ -86,11 +86,7 @@ public class WalletWorkflow implements WalletUseCase {
 
   @Override
   public List<Wallet> getAllWallets() {
-    var users = userRepository.findAllUsers();
-    return users.stream().map(user -> {
-      var assets = assetRepository.findByWalletId(user.walletId());
-      return Wallet.of(user.walletId(), assets, user.createdAt());
-    }).toList();
+    return assetRepository.findAllWalletsWithAssets();
   }
 
   @Override

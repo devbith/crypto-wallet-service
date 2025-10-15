@@ -26,4 +26,6 @@ public interface AssetRepository {
   Wallet saveAssetAndReturnWallet(WalletId walletId, Asset assetToSave, User walletOwner);
 
   void delete(WalletId walletId, Symbol symbol);
+
+  List<Wallet> findAllWalletsWithAssets();
 }
